@@ -1,2 +1,1 @@
-IPU_Lab4
-========
+SDK 1.1 labs
