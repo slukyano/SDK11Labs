@@ -44,7 +44,7 @@ $(call PROJ_BIN,$(1)): $(call BUILD_LIST,$(1)) makefile | $(BIN_DIR)
 	$(M3P) hb166 "$(call PROJ_HEX,$(1))" "$(call PROJ_BIN,$(1))" bye
 $(1): $(call PROJ_BIN,$(1))
 
-load_$(1): $$(call PROJ_BIN,$(1))
+load-$(1): $$(call PROJ_BIN,$(1))
 	$(M3P) lfile load-$(1).m3p
 endef
 
