@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <stdint.h>
 #include <string.h>
 #include "aduc812.h"
@@ -20,9 +19,6 @@ static uint8_t randomize()
 	uint8_t rand;
 	uint16_t i;
 	rand = ((TL0 >> 4) ^ (TL1 << 4) ^ TL2);
-	leds(rand);
-	for(i = 0;i<10000;i++)
-		{}
 	return rand;
 }
 
