@@ -200,8 +200,7 @@ static void kb_isr() __interrupt (IE0_VECTOR)
 {
 	uint16_t i;
 	TCON&=0xFD;
-
-	leds(0xFF);
+	
 	if (is_in_delay)
         return;
 	

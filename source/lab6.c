@@ -5,6 +5,7 @@
 #include "uart.h"
 #include "eeprom.h"
 #include "timer.h"
+#include "led.h"
 
 #define SIZE_BUF    128
 #define CRC_POLYNOM 0x0131
@@ -14,18 +15,24 @@ static uint8_t __xdata buf[SIZE_BUF];
 // using timers as entropy source
 static uint8_t randomize()
 {
-    return (TL0 ^ TL1 ^ TL2) << 4 + (TL0 ^ TL1 ^ TL2);
+	uint8_t rand;
+	uint16_t i;
+	rand = ((TL0 >> 4) ^ (TL1 << 4) ^ TL2);
+	leds(rand);
+	for(i = 0;i<10000;i++)
+		{}
+	return rand;
 }
 
-static uint8_t crc8(void *dataptr, uint32_t len, uint16_t polynom)
+static uint8_t crc8(uint8_t *dataptr, uint32_t len, uint16_t polynom)
 {
-    uint8_t *data = dataptr;
+    uint8_t *dataa = dataptr;
     uint16_t crc = 0;
     uint8_t i;
     uint32_t j;
-
-    for (j = 0; j < len; j++, data++) {
-        crc ^= (*data << 8);
+	
+    for (j = 0; j < len; j++, dataa++) {
+        crc ^= (*dataa << 8);
         for(i = 0; i < 8; i++) {
             if (crc & 0x8000)
                 crc ^= (polynom << 7);
@@ -47,11 +54,14 @@ static void show_buf()
     uint32_t i;
     for(i = 0; i < SIZE_BUF; i++)
     {
-        write_uart(hex_to_ascii(buf[i] & 0xF0) >> 4);
-        write_uart(hex_to_ascii(buf[i] & 0x0F));
+        //write_uart(hex_to_ascii(buf[i] & 0xF0) >> 4);
+        //write_uart(hex_to_ascii(buf[i] & 0x0F));
+		write_uart(buf[i]);
         write_uart(i%16==0 ? '\n' : ' ');
+				
+        //write_uart(buf[i] & 0x0F);
     }
-    writeln_uart("######\n\r");
+	 write_uart('\n');
 }
 
 static void write_eeprom(__bit verbose)
@@ -96,7 +106,8 @@ static void clear_eeprom()
     uint8_t i;
     for(i = 0; i <= SIZE_BUF-2; i++)
         buf[i] = 0xff;
-
+	buf[SIZE_BUF-1] = crc8(buf, SIZE_BUF-1, CRC_POLYNOM); // write crc8	
+	
     writeln_uart("Clear: [");
 
     if (write_block_eeprom(0, buf, SIZE_BUF) == 1)
@@ -119,7 +130,8 @@ static void print_menu()
 void main( void )
 {
     init_uart();
-
+	init_timer();
+	
     while(1)
     {
         print_menu();
@@ -134,5 +146,4 @@ void main( void )
             default: writeln_uart("wrong input\r\n"); break;
         }
     }
-}    
-
+}
