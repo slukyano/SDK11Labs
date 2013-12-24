@@ -21,8 +21,10 @@ static void sound_isr() __interrupt (TF2_VECTOR){
         TH2 = 0xF9;
         TL2 = 0x1E;
     }
-    else 
+    else {
         TR2 = 0;
+        ET2 = 1; 
+    }
 }
 void make_beep(){
     half_periods = 0;
@@ -30,10 +32,10 @@ void make_beep(){
     TH2 = 0xF9;
     TL2 = 0x1E;
     TR2 = 1;
+    ET2 = 1; 
 }
 
 void init_sound(){
-    set_vector(TF2_ADDRESS, (void*)sound_isr);
-    ET2 = 1;        
+    set_vector(TF2_ADDRESS, (void*)sound_isr);       
 }
 
