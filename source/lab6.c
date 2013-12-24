@@ -7,6 +7,7 @@
 #include "timer.h"
 #include "led.h"
 #include "lcd.h"
+#include "keyboard.h"
 
 #define SIZE_BUF    128
 #define CRC_POLYNOM 0x0131
@@ -119,7 +120,7 @@ static void clear_eeprom()
 
 static void print_menu()
 {
-    writeln_uart( "EEPROM TEST\r\n" );
+    writeln_uart( "    EEPROM TEST\r\n" );
     writeln_uart( "===================================\r\n" );
     writeln_uart( "1 - Write\r\n" );
     writeln_uart( "2 - Read\r\n" );
@@ -128,16 +129,25 @@ static void print_menu()
     writeln_uart( "===================================\r\n" );
 }
 
+static void print_menu_lcd()
+{
+	lcd_clear();
+	lcd_puts("1-Write 2-Read  3-Clear 4-Auto");
+}
+
 void main( void )
 {
+	char choice;
     init_uart();
-	init_timer();
+	init_kb();
+	EA=1;
 	
     while(1)
     {
         print_menu();
-
-        switch(read_uart())
+		print_menu_lcd();
+		choice = read_kb_char();//read_uart;
+        switch(choice)
         {
             case '1':    write_eeprom(1); break;
             case '2':    read_eeprom(1); break;

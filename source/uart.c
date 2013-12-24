@@ -7,8 +7,8 @@ void init_uart()
 {
 	set_vector(SI0_ADDRESS, 0);
     SCON = 0x52;
-    TMOD = 0x20;
-    TCON = 0x69;
+    TMOD |= 0x20;
+    TCON |= 0x69;
     TH1 = 0xF4;
 }
 
