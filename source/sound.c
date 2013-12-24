@@ -23,7 +23,7 @@ static void sound_isr() __interrupt (TF2_VECTOR){
     }
     else {
         TR2 = 0;
-        ET2 = 1; 
+        ET2 = 0; 
     }
 }
 void make_beep(){
