@@ -38,4 +38,3 @@ void make_beep(){
 void init_sound(){
     set_vector(TF2_ADDRESS, (void*)sound_isr);       
 }
-
