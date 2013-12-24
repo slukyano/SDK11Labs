@@ -10,9 +10,9 @@
 #include "timer.h"
 #include "lcd.h"
 
-#define OPER_MAX_LGTH 7
-#define STR_MAX_LGTH 8
-#define RESULT_MAX_LGTH 16
+#define OPER_MAX_LGTH 2
+#define STR_MAX_LGTH 3
+#define RESULT_MAX_LGTH 5
 
 void reverse(char s[])
 {
@@ -120,28 +120,28 @@ void main(void)
 					}
 					continue;
 				case 'A'://add
-					if(sign == 0){
+					if((sign == 0)&&(oper_iter!=0)){
 						sign = 1;
 						oper_iter = 0;
 						lcd_putchar('+');
 					}																
 					break;
 				case 'B'://sub
-					if(sign == 0){
+					if((sign == 0)&&(oper_iter!=0)){
 						sign = 2;
 						oper_iter = 0;
 						lcd_putchar('-');
 					}
 					break;
 				case 'C'://mult
-					if(sign == 0){
+					if((sign == 0)&&(oper_iter!=0)){
 						sign = 3;
 						oper_iter = 0;
 						lcd_putchar('*');
 					}
 					break;
 				case 'D'://div
-					if(sign == 0){
+					if((sign == 0)&&(oper_iter!=0)){
 						sign = 4;
 						oper_iter = 0;
 						lcd_putchar('/');

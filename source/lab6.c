@@ -6,6 +6,7 @@
 #include "eeprom.h"
 #include "timer.h"
 #include "led.h"
+#include "lcd.h"
 
 #define SIZE_BUF    128
 #define CRC_POLYNOM 0x0131
