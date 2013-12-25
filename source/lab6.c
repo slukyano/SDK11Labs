@@ -10,6 +10,7 @@
 
 #define SIZE_BUF    128
 #define CRC_POLYNOM 0x0131
+#define KEYBOARD_LCD
 
 static uint8_t __xdata buf[SIZE_BUF];
 
@@ -19,6 +20,9 @@ static uint8_t randomize()
 	uint8_t rand;
 	uint16_t i;
 	rand = ((TL0 >> 4) ^ (TL1 << 4) ^ TL2);
+	leds(rand);
+	for(i=0;i<=10000;i++)
+		{}
 	return rand;
 }
 
@@ -69,34 +73,79 @@ static void write_eeprom(__bit verbose)
         buf[i] = randomize();        
     
     buf[SIZE_BUF-1] = crc8(buf, SIZE_BUF-1, CRC_POLYNOM); // write crc8
-
+	
     writeln_uart("Write test: [");
+	#ifdef KEYBOARD_LCD
+	lcd_clear();	
+	lcd_puts("Write: [");
+	#endif
 
     if (write_block_eeprom(0, buf, SIZE_BUF) == 1)
+	{
         writeln_uart("ERR_I2C]\r\n");
+		#ifdef KEYBOARD_LCD
+		lcd_puts("ERR_I2C]");
+		if(verbose)
+			read_kb_char();
+		#endif
+	}
     else
+	{
         writeln_uart("OK]\r\n");
-    
+		#ifdef KEYBOARD_LCD
+		lcd_puts("OK]");
+		if(verbose)
+			read_kb_char();
+		#endif
+	}
+    #ifndef KEYBOARD_LCD
     if(verbose)        
-        show_buf();    
+        show_buf();
+	#endif		
 }
 
 static void read_eeprom(__bit verbose)
 {
     writeln_uart("Read test: [");
+	#ifdef KEYBOARD_LCD
+	if(verbose){		
+		lcd_clear();
+	}
+	else{
+		lcd_movcur(0,1);
+	}
+	lcd_puts("Read: [");
+	#endif
 
     if (read_block_eeprom(0, buf, SIZE_BUF) == 1) {
         writeln_uart("ERR_I2C]\r\n");
+		#ifdef KEYBOARD_LCD
+		lcd_puts("ERR_I2C]");
+		read_kb_char();
+		#endif
         return;
     }
 
     if (buf[SIZE_BUF-1] != crc8(buf, SIZE_BUF-1, CRC_POLYNOM)) // check crc8
+	{
         writeln_uart("ERR_CRC]\r\n");
+		#ifdef KEYBOARD_LCD
+		lcd_puts("ERR_CRC]");
+		read_kb_char();
+		#endif
+	}
     else
-        writeln_uart("OK]\r\n");
-    
+	{
+		writeln_uart("OK]\r\n");
+		#ifdef KEYBOARD_LCD
+		lcd_puts("OK]");
+		read_kb_char();
+		#endif
+	}
+    #ifndef KEYBOARD_LCD
     if(verbose)        
         show_buf();
+	#endif
 }
 
 static void clear_eeprom()
@@ -107,11 +156,27 @@ static void clear_eeprom()
 	buf[SIZE_BUF-1] = crc8(buf, SIZE_BUF-1, CRC_POLYNOM); // write crc8	
 	
     writeln_uart("Clear: [");
+	#ifdef KEYBOARD_LCD
+	lcd_clear();
+	lcd_puts("Clear: [");
+	#endif
 
     if (write_block_eeprom(0, buf, SIZE_BUF) == 1)
-        writeln_uart("ERR_I2C]\r\n");
+	{
+		writeln_uart("ERR_I2C]\r\n");
+		#ifdef KEYBOARD_LCD
+		lcd_puts("ERR_I2C]");
+		read_kb_char();
+		#endif
+	}
     else
-        writeln_uart("OK]\r\n");
+	{	
+		writeln_uart("OK]\r\n");
+		#ifdef KEYBOARD_LCD
+		lcd_puts("OK]");
+		read_kb_char();
+		#endif
+	}
 }
 
 static void print_menu()
@@ -135,14 +200,20 @@ void main( void )
 {
 	char choice;
     init_uart();
+	#ifdef KEYBOARD_LCD
 	init_kb();
+	#endif
 	EA=1;
 	
     while(1)
-    {
-        print_menu();
+    {	
+		#ifdef KEYBOARD_LCD
 		print_menu_lcd();
-		choice = read_kb_char();//read_uart;
+		choice = read_kb_char();
+		#else
+		print_menu();
+		choice = read_uart();
+		#endif
         switch(choice)
         {
             case '1':    write_eeprom(1); break;
