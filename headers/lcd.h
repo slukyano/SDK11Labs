@@ -1,5 +1,9 @@
 #ifndef __LCD__H
 #define __LCD__H
+
+#define DATA_IND_ADDR 0x080001
+#define C_IND_ADDR 0x080006
+
 /*Функция возвращает значение флага занятости - BF */
 unsigned char lcd_bfstate();
 /* Функция возвращает значение счетчика адреса для DDRAM */

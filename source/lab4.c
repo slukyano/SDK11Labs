@@ -8,7 +8,7 @@
 #include "keyboard.h"
 #include "timer.h"
 
-#define REQUEST_MAX_LENGTH 4
+#define REQUEST_MAX_LENGTH 3
 #define RESPONSE_MAX_LENGTH 5
 
 void reverse(char s[])

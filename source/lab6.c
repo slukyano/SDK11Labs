@@ -202,6 +202,7 @@ void main( void )
     init_uart();
 	#ifdef KEYBOARD_LCD
 	init_kb();
+	init_lcd();
 	#endif
 	EA=1;
 	
