@@ -199,9 +199,9 @@ static void print_menu_lcd()
 void main( void )
 {
 	char choice;
-    init_uart();
-	#ifdef KEYBOARD_LCD
+    init_uart();	
 	init_kb();
+	#ifdef KEYBOARD_LCD
 	init_lcd();
 	#endif
 	EA=1;

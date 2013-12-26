@@ -58,7 +58,11 @@ int32_t compute(char f_oper[], char s_oper[], uint8_t sign){
 		case 1: return buf_to_int32(f_oper)+buf_to_int32(s_oper);
 		case 2: return buf_to_int32(f_oper)-buf_to_int32(s_oper);
 		case 3: return buf_to_int32(f_oper)*buf_to_int32(s_oper);
-		case 4: return buf_to_int32(f_oper)/buf_to_int32(s_oper);
+		case 4: if(buf_to_int32(s_oper) == 0){
+		lcd_puts("ERR"); break;
+		}
+		else
+			return buf_to_int32(f_oper)/buf_to_int32(s_oper);
 	}
 	return 0;
 }
